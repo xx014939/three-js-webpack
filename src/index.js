@@ -1,174 +1,84 @@
 import * as THREE from 'three'
 import { WEBGL } from './webgl'
 import './modal'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import Stats from 'three/examples/jsm/libs/stats.module'
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
-if (WEBGL.isWebGLAvailable()) {
-  var camera, scene, renderer
-  var plane
-  var mouse,
-    raycaster,
-    isShiftDown = false
+			let camera, scene, renderer;
 
-  var rollOverMesh, rollOverMaterial
-  var cubeGeo, cubeMaterial
+			init();
+			render();
 
-  var objects = []
+			function init() {
 
-  init()
-  render()
+				const container = document.createElement( 'div' );
+				document.body.appendChild( container );
 
-  function init() {
-    camera = new THREE.PerspectiveCamera(
-      45,
-      window.innerWidth / window.innerHeight,
-      1,
-      10000
-    )
-    camera.position.set(500, 800, 1300)
-    camera.lookAt(0, 0, 0)
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.25, 20 );
+				camera.position.set( - 1.8, 0.6, 2.7 );
 
-    scene = new THREE.Scene()
-    scene.background = new THREE.Color(0xf0f0f0)
+				scene = new THREE.Scene();
 
-    var rollOverGeo = new THREE.BoxBufferGeometry(50, 50, 50)
-    rollOverMaterial = new THREE.MeshBasicMaterial({
-      color: 0xff0000,
-      opacity: 0.5,
-      transparent: true,
-    })
-    rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial)
-    scene.add(rollOverMesh)
+				new RGBELoader()
+					.setPath( 'src/textures/equirectangular/' )
+					.load( 'converted.hdr', function ( texture ) {
 
-    cubeGeo = new THREE.BoxBufferGeometry(50, 50, 50)
-    cubeMaterial = new THREE.MeshLambertMaterial({
-      color: 0xfeb74c,
-      map: new THREE.TextureLoader().load('static/textures/square.png'),
-    })
+						texture.mapping = THREE.EquirectangularReflectionMapping;
 
-    var gridHelper = new THREE.GridHelper(1000, 20)
-    scene.add(gridHelper)
+						scene.background = texture;
+						scene.environment = texture;
 
-    raycaster = new THREE.Raycaster()
-    mouse = new THREE.Vector2()
+						render();
 
-    var geometry = new THREE.PlaneBufferGeometry(1000, 1000)
-    geometry.rotateX(-Math.PI / 2)
+						// model
 
-    plane = new THREE.Mesh(
-      geometry,
-      new THREE.MeshBasicMaterial({ visible: false })
-    )
-    scene.add(plane)
+						const loader = new GLTFLoader().setPath( 'src/models/' );
+						loader.load( 'test.gltf', function ( gltf ) {
 
-    objects.push(plane)
+							scene.add( gltf.scene );
 
-    var ambientLight = new THREE.AmbientLight(0x606060)
-    scene.add(ambientLight)
+							render();
 
-    var directionalLight = new THREE.DirectionalLight(0xffffff)
-    directionalLight.position.set(1, 0.75, 0.5).normalize()
-    scene.add(directionalLight)
+						} );
 
-    renderer = new THREE.WebGLRenderer({ antialias: true })
-    renderer.setPixelRatio(window.devicePixelRatio)
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    document.body.appendChild(renderer.domElement)
+					} );
 
-    document.addEventListener('mousemove', onDocumentMouseMove, false)
-    document.addEventListener('mousedown', onDocumentMouseDown, false)
-    document.addEventListener('keydown', onDocumentKeyDown, false)
-    document.addEventListener('keyup', onDocumentKeyUp, false)
-    window.addEventListener('resize', onWindowResize, false)
-  }
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.toneMapping = THREE.ACESFilmicToneMapping;
+				renderer.toneMappingExposure = 1;
+				renderer.outputEncoding = THREE.sRGBEncoding;
+				container.appendChild( renderer.domElement );
 
-  function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight
-    camera.updateProjectionMatrix()
+				const controls = new OrbitControls( camera, renderer.domElement );
+				controls.addEventListener( 'change', render ); // use if there is no animation loop
+				controls.minDistance = 2;
+				controls.maxDistance = 10;
+				controls.target.set( 0, 0, - 0.2 );
+				controls.update();
 
-    renderer.setSize(window.innerWidth, window.innerHeight)
-  }
+				window.addEventListener( 'resize', onWindowResize );
 
-  function onDocumentMouseMove(event) {
-    event.preventDefault()
+			}
 
-    mouse.set(
-      (event.clientX / window.innerWidth) * 2 - 1,
-      -(event.clientY / window.innerHeight) * 2 + 1
-    )
+			function onWindowResize() {
 
-    raycaster.setFromCamera(mouse, camera)
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
 
-    var intersects = raycaster.intersectObjects(objects)
+				renderer.setSize( window.innerWidth, window.innerHeight );
 
-    if (intersects.length > 0) {
-      var intersect = intersects[0]
+				render();
 
-      rollOverMesh.position.copy(intersect.point).add(intersect.face.normal)
-      rollOverMesh.position
-        .divideScalar(50)
-        .floor()
-        .multiplyScalar(50)
-        .addScalar(25)
-    }
+			}
 
-    render()
-  }
+			//
 
-  function onDocumentMouseDown(event) {
-    event.preventDefault()
+			function render() {
 
-    mouse.set(
-      (event.clientX / window.innerWidth) * 2 - 1,
-      -(event.clientY / window.innerHeight) * 2 + 1
-    )
+				renderer.render( scene, camera );
 
-    raycaster.setFromCamera(mouse, camera)
-
-    var intersects = raycaster.intersectObjects(objects)
-
-    if (intersects.length > 0) {
-      var intersect = intersects[0]
-
-      if (isShiftDown) {
-        if (intersect.object !== plane) {
-          scene.remove(intersect.object)
-
-          objects.splice(objects.indexOf(intersect.object), 1)
-        }
-
-      } else {
-        var voxel = new THREE.Mesh(cubeGeo, cubeMaterial)
-        voxel.position.copy(intersect.point).add(intersect.face.normal)
-        voxel.position.divideScalar(50).floor().multiplyScalar(50).addScalar(25)
-        scene.add(voxel)
-
-        objects.push(voxel)
-      }
-
-      render()
-    }
-  }
-
-  function onDocumentKeyDown(event) {
-    switch (event.keyCode) {
-      case 16:
-        isShiftDown = true
-        break
-    }
-  }
-
-  function onDocumentKeyUp(event) {
-    switch (event.keyCode) {
-      case 16:
-        isShiftDown = false
-        break
-    }
-  }
-
-  function render() {
-    renderer.render(scene, camera)
-  }
-} else {
-  var warning = WEBGL.getWebGLErrorMessage()
-  document.body.appendChild(warning)
-}
+			}

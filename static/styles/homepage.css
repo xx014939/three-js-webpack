@@ -1,0 +1,24 @@
+body {
+    background-color: #000000;
+    color: white;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+.experience-container {
+    padding: 50px 125px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.experience {
+    border: 2px solid white;
+    border-radius: 5%;
+    padding: 20px;
+    text-align: center;
+    font-size: 24px;
+    min-width: 200px;
+    text-decoration: none;
+    color: white;
+}
