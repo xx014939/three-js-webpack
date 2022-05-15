@@ -5,13 +5,14 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import Stats from 'three/examples/jsm/libs/stats.module'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import axios from 'axios';
 
 			let camera, scene, renderer;
 
 			init();
 			render();
 
-			function init() {
+			async function init() {
 
 				const container = document.createElement( 'div' );
 				document.body.appendChild( container );
@@ -34,14 +35,23 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
 						// model
 
-						const loader = new GLTFLoader().setPath( 'src/models/' );
-						loader.load( 'test.gltf', function ( gltf ) {
+						axios.get('https://warm-journey-29417.herokuapp.com/nfts/62814d0eaa18ace952034dc7', {
+							params: {
+							}
+						})
+						.then(function (response) {
+							console.log(response);
+							console.log(response.data.ipfsModelLinks)
 
-							scene.add( gltf.scene );
-
-							render();
-
-						} );
+							const loader = new GLTFLoader()
+							loader.load( `${response.data.ipfsModelLinks}`, function ( gltf ) {
+	
+								scene.add( gltf.scene );
+	
+								render();
+	
+							} );
+						})
 
 					} );
 
