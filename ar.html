@@ -4,9 +4,9 @@
     <!-- we import arjs version without NFT but with marker + location based support -->
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
     <script>
-        let nftID = prompt('Please eneter your NFT ID')
+        let nftID = prompt('Please enter your NFT ID, or use our test one --> 62814d0eaa18ace952034dc7 PLEASE BE PATIENT, IT CAN TAKE AROUND A MINUTE FOR THE MODEL TO DOWNLOAD')
         async function fetchModel() {
-            let response = await fetch('https://warm-journey-29417.herokuapp.com/nfts/62814d0eaa18ace952034dc7')
+            let response = await fetch(`https://warm-journey-29417.herokuapp.com/nfts/${nftID}`)
             let modelURL = await response.json()
 
             console.log(modelURL.ipfsModelLinks[0])

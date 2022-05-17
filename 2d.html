@@ -8,8 +8,9 @@
   </div><!--end frame-->
 
   <script>
+    let nftID = prompt('Please enter your NFT ID, or use our test one --> 6282fcff10b951006405ba31 PLEASE BE PATIENT, IT CAN TAKE AROUND A MINUTE FOR THE IMAGE TO DOWNLOAD')
     async function fetchImage() {
-        let response = await fetch('https://warm-journey-29417.herokuapp.com/nfts/6282fcff10b951006405ba31')
+        let response = await fetch(`https://warm-journey-29417.herokuapp.com/nfts/${nftID}`)
         let ImageURL = await response.json()
 
         const Asset = document.querySelector('.portrait')

@@ -7,7 +7,7 @@ import Stats from 'three/examples/jsm/libs/stats.module'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import axios from 'axios';
 
-let nftID = prompt('Please eneter your NFT ID')
+let nftID = prompt('Please enter your NFT ID, or use our test one --> 62814d0eaa18ace952034dc7 PLEASE BE PATIENT, IT CAN TAKE AROUND A MINUTE FOR THE MODEL TO DOWNLOAD')
 			let camera, scene, renderer;
 			init();
 			render();
