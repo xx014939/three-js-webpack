@@ -3,12 +3,26 @@
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <!-- we import arjs version without NFT but with marker + location based support -->
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <script>
+        let nftID = prompt('Please eneter your NFT ID')
+        async function fetchModel() {
+            let response = await fetch('https://warm-journey-29417.herokuapp.com/nfts/62814d0eaa18ace952034dc7')
+            let modelURL = await response.json()
+
+            console.log(modelURL.ipfsModelLinks[0])
+            const Asset = document.getElementById('3dasset')
+            console.log(Asset)
+
+            Asset.src = `${modelURL.ipfsModelLinks[0]}`
+            
+        }
+        fetchModel()
+    </script>
     <body style="margin : 0px; overflow: hidden;">
         <a-scene embedded arjs>
            
             <a-assets>
-                <a-asset-item id='warcraft' src='models/warcraft/scene.gltf'></a-asset-item>
-                <a-asset-item id='helmet' src='models/damaged_helmet/scene.gltf'></a-asset-item>
+                <a-asset-item id='3dasset' src="models/damaged_helmet/scene.gltf"></a-asset-item>
             </a-assets>
 
         <a-marker preset="hiro">
@@ -16,7 +30,7 @@
             position="0 0 0"
             scale="1 1 1"
             rotation="0 180 0"
-            gltf-model='#helmet'>
+            gltf-model='#3dasset'>
             </a-entity>
         </a-marker>
 

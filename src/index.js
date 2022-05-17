@@ -7,8 +7,8 @@ import Stats from 'three/examples/jsm/libs/stats.module'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import axios from 'axios';
 
-			let camera, scene, renderer;
 
+			let camera, scene, renderer;
 			init();
 			render();
 
@@ -92,3 +92,4 @@ import axios from 'axios';
 				renderer.render( scene, camera );
 
 			}
+

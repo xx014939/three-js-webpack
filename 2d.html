@@ -1,0 +1,70 @@
+<div class="frame">
+    <div class="border">
+      <div class="image">
+        <img class="portrait" src="http://images5.fanpop.com/image/photos/30000000/Marilyn-Monroe-marilyn-monroe-30014001-960-1280.jpg" style="width: 100%; height: 100%; margin-left: -15px" alt="" />
+      </div><!--end image-->
+      <div class="text">Marilyn Monroe</div>
+    </div><!--end border-->
+  </div><!--end frame-->
+
+  <script>
+    async function fetchImage() {
+        let response = await fetch('https://warm-journey-29417.herokuapp.com/nfts/6282fcff10b951006405ba31')
+        let ImageURL = await response.json()
+
+        const Asset = document.querySelector('.portrait')
+        const Title = document.querySelector('.text')
+        console.log(Asset)
+
+        Asset.src = `${ImageURL.ipfsImageLinks[0]}`
+        Title.innerHTML = `${ImageURL.walletAddress}`
+
+        
+    }
+    fetchImage()
+</script>
+
+  <style>
+      @import url('https://fonts.googleapis.com/css?family=Parisienne|Playball');
+
+body {
+ background:url('https://www.subtlepatterns.com/patterns/brickwall.png');
+  background-size:10%;
+}
+
+.frame {
+  margin:50px auto;
+  border:25px solid #222;
+  height:475px;
+  width:350px;
+  -webkit-box-shadow:  px 2px 3px 1px rgba(0, 0, 0, .5);
+  box-shadow:  0px 3px 10px 4px rgba(0, 0, 0, .3);
+}
+
+.border {
+  background:white;
+  height:100%;
+  width:100%;
+  -webkit-box-shadow: inset 10px 10px 10px 4px rgba(0, 0, 0, .4);
+  box-shadow: inset 3px 7px 2px 5px rgba(0, 0, 0, .4);
+}
+
+.image {
+  position:absolute;
+  height:350px;
+  width:250px;
+  margin-left:50px;
+  margin-top:50px;
+  -webkit-box-shadow: inset 10px 10px 10px 4px rgba(0, 0, 0, .6);
+  box-shadow: inset 3px 7px 2px 5px rgba(0, 0, 0, .1);
+  border:2px inset #c9c9c9;
+}
+
+.text {
+  position:absolute;
+  margin-top:420px;
+  font-family: 'Playball', cursive;
+  font-size:30px;
+  margin-left:85px;
+}
+  </style>
