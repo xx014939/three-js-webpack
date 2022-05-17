@@ -7,7 +7,7 @@ import Stats from 'three/examples/jsm/libs/stats.module'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import axios from 'axios';
 
-
+let nftID = prompt('Please eneter your NFT ID')
 			let camera, scene, renderer;
 			init();
 			render();
@@ -35,7 +35,7 @@ import axios from 'axios';
 
 						// model
 
-						axios.get('https://warm-journey-29417.herokuapp.com/nfts/62814d0eaa18ace952034dc7', {
+						axios.get(`https://warm-journey-29417.herokuapp.com/nfts/${nftID}`, {
 							params: {
 							}
 						})
